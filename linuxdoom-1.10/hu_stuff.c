@@ -20,9 +20,6 @@
 //
 //-----------------------------------------------------------------------------
 
-static const char
-rcsid[] = "$Id: hu_stuff.c,v 1.4 1997/02/03 16:47:52 b1 Exp $";
-
 #include <ctype.h>
 
 #include "doomdef.h"
@@ -102,7 +99,7 @@ static boolean		message_nottobefuckedwith;
 static hu_stext_t	w_message;
 static int		message_counter;
 
-extern int		showMessages;
+extern long		showMessages;
 extern boolean		automapactive;
 
 static boolean		headsupactive = false;

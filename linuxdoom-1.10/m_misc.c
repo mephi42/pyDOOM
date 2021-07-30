@@ -24,9 +24,6 @@
 //
 //-----------------------------------------------------------------------------
 
-static const char
-rcsid[] = "$Id: m_misc.c,v 1.6 1997/02/03 22:45:10 b1 Exp $";
-
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
@@ -166,51 +163,51 @@ M_ReadFile
 //
 // DEFAULTS
 //
-int		usemouse;
-int		usejoystick;
+long		usemouse;
+long		usejoystick;
 
-extern int	key_right;
-extern int	key_left;
-extern int	key_up;
-extern int	key_down;
+extern long	key_right;
+extern long	key_left;
+extern long	key_up;
+extern long	key_down;
 
-extern int	key_strafeleft;
-extern int	key_straferight;
+extern long	key_strafeleft;
+extern long	key_straferight;
 
-extern int	key_fire;
-extern int	key_use;
-extern int	key_strafe;
-extern int	key_speed;
+extern long	key_fire;
+extern long	key_use;
+extern long	key_strafe;
+extern long	key_speed;
 
-extern int	mousebfire;
-extern int	mousebstrafe;
-extern int	mousebforward;
+extern long	mousebfire;
+extern long	mousebstrafe;
+extern long	mousebforward;
 
-extern int	joybfire;
-extern int	joybstrafe;
-extern int	joybuse;
-extern int	joybspeed;
+extern long	joybfire;
+extern long	joybstrafe;
+extern long	joybuse;
+extern long	joybspeed;
 
 extern int	viewwidth;
 extern int	viewheight;
 
-extern int	mouseSensitivity;
-extern int	showMessages;
+extern long	mouseSensitivity;
+extern long	showMessages;
 
-extern int	detailLevel;
+extern long	detailLevel;
 
-extern int	screenblocks;
+extern long	screenblocks;
 
-extern int	showMessages;
+extern long	showMessages;
 
 // machine-independent sound params
-extern	int	numChannels;
+extern	long	numChannels;
 
 
 // UNIX hack, to be removed.
 #ifdef SNDSERV
 extern char*	sndserver_filename;
-extern int	mb_used;
+extern long	mb_used;
 #endif
 
 #ifdef LINUX
@@ -225,8 +222,8 @@ extern char*	chat_macros[];
 typedef struct
 {
     char*	name;
-    int*	location;
-    int		defaultvalue;
+    long*	location;
+    long	defaultvalue;
     int		scantranslate;		// PC scan code hack
     int		untranslated;		// lousy hack
 } default_t;
@@ -254,15 +251,15 @@ default_t	defaults[] =
 
 // UNIX hack, to be removed. 
 #ifdef SNDSERV
-    {"sndserver", (int *) &sndserver_filename, (int) "sndserver"},
+    {"sndserver", (long *) &sndserver_filename, (long) "sndserver"},
     {"mb_used", &mb_used, 2},
 #endif
     
 #endif
 
 #ifdef LINUX
-    {"mousedev", (int*)&mousedev, (int)"/dev/ttyS0"},
-    {"mousetype", (int*)&mousetype, (int)"microsoft"},
+    {"mousedev", (long*)&mousedev, (long)"/dev/ttyS0"},
+    {"mousetype", (long*)&mousetype, (long)"microsoft"},
 #endif
 
     {"use_mouse",&usemouse, 1},
@@ -285,16 +282,16 @@ default_t	defaults[] =
 
     {"usegamma",&usegamma, 0},
 
-    {"chatmacro0", (int *) &chat_macros[0], (int) HUSTR_CHATMACRO0 },
-    {"chatmacro1", (int *) &chat_macros[1], (int) HUSTR_CHATMACRO1 },
-    {"chatmacro2", (int *) &chat_macros[2], (int) HUSTR_CHATMACRO2 },
-    {"chatmacro3", (int *) &chat_macros[3], (int) HUSTR_CHATMACRO3 },
-    {"chatmacro4", (int *) &chat_macros[4], (int) HUSTR_CHATMACRO4 },
-    {"chatmacro5", (int *) &chat_macros[5], (int) HUSTR_CHATMACRO5 },
-    {"chatmacro6", (int *) &chat_macros[6], (int) HUSTR_CHATMACRO6 },
-    {"chatmacro7", (int *) &chat_macros[7], (int) HUSTR_CHATMACRO7 },
-    {"chatmacro8", (int *) &chat_macros[8], (int) HUSTR_CHATMACRO8 },
-    {"chatmacro9", (int *) &chat_macros[9], (int) HUSTR_CHATMACRO9 }
+    {"chatmacro0", (long *) &chat_macros[0], (long) HUSTR_CHATMACRO0 },
+    {"chatmacro1", (long *) &chat_macros[1], (long) HUSTR_CHATMACRO1 },
+    {"chatmacro2", (long *) &chat_macros[2], (long) HUSTR_CHATMACRO2 },
+    {"chatmacro3", (long *) &chat_macros[3], (long) HUSTR_CHATMACRO3 },
+    {"chatmacro4", (long *) &chat_macros[4], (long) HUSTR_CHATMACRO4 },
+    {"chatmacro5", (long *) &chat_macros[5], (long) HUSTR_CHATMACRO5 },
+    {"chatmacro6", (long *) &chat_macros[6], (long) HUSTR_CHATMACRO6 },
+    {"chatmacro7", (long *) &chat_macros[7], (long) HUSTR_CHATMACRO7 },
+    {"chatmacro8", (long *) &chat_macros[8], (long) HUSTR_CHATMACRO8 },
+    {"chatmacro9", (long *) &chat_macros[9], (long) HUSTR_CHATMACRO9 }
 
 };
 
@@ -308,7 +305,7 @@ char*	defaultfile;
 void M_SaveDefaults (void)
 {
     int		i;
-    int		v;
+    long	v;
     FILE*	f;
 	
     f = fopen (defaultfile, "w");
@@ -321,7 +318,7 @@ void M_SaveDefaults (void)
 	    && defaults[i].defaultvalue < 0xfff)
 	{
 	    v = *defaults[i].location;
-	    fprintf (f,"%s\t\t%i\n",defaults[i].name,v);
+	    fprintf (f,"%s\t\t%ld\n",defaults[i].name,v);
 	} else {
 	    fprintf (f,"%s\t\t\"%s\"\n",defaults[i].name,
 		     * (char **) (defaults[i].location));
@@ -345,7 +342,7 @@ void M_LoadDefaults (void)
     char	def[80];
     char	strparm[100];
     char*	newstring;
-    int		parm;
+    long	parm;
     boolean	isstring;
     
     // set everything to base values
@@ -382,9 +379,9 @@ void M_LoadDefaults (void)
 		    strcpy(newstring, strparm+1);
 		}
 		else if (strparm[0] == '0' && strparm[1] == 'x')
-		    sscanf(strparm+2, "%x", &parm);
+		    sscanf(strparm+2, "%lx", &parm);
 		else
-		    sscanf(strparm, "%i", &parm);
+		    sscanf(strparm, "%ld", &parm);
 		for (i=0 ; i<numdefaults ; i++)
 		    if (!strcmp(def, defaults[i].name))
 		    {
@@ -392,7 +389,7 @@ void M_LoadDefaults (void)
 			    *defaults[i].location = parm;
 			else
 			    *defaults[i].location =
-				(int) newstring;
+				(long) newstring;
 			break;
 		    }
 	    }

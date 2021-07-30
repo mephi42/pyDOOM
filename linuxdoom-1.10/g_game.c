@@ -20,10 +20,6 @@
 //
 //-----------------------------------------------------------------------------
 
-
-static const char
-rcsid[] = "$Id: g_game.c,v 1.8 1997/02/03 22:45:09 b1 Exp $";
-
 #include <string.h>
 #include <stdlib.h>
 
@@ -145,26 +141,26 @@ byte*		savebuffer;
 // 
 // controls (have defaults) 
 // 
-int             key_right;
-int		key_left;
+long            key_right;
+long		key_left;
 
-int		key_up;
-int		key_down; 
-int             key_strafeleft;
-int		key_straferight; 
-int             key_fire;
-int		key_use;
-int		key_strafe;
-int		key_speed; 
- 
-int             mousebfire; 
-int             mousebstrafe; 
-int             mousebforward; 
- 
-int             joybfire; 
-int             joybstrafe; 
-int             joybuse; 
-int             joybspeed; 
+long		key_up;
+long		key_down;
+long            key_strafeleft;
+long		key_straferight;
+long            key_fire;
+long		key_use;
+long		key_strafe;
+long		key_speed;
+
+long            mousebfire;
+long            mousebstrafe;
+long            mousebforward;
+
+long            joybfire;
+long            joybstrafe;
+long            joybuse;
+long            joybspeed;
  
  
  
@@ -456,8 +452,8 @@ void G_DoLoadLevel (void)
     // DOOM determines the sky texture to be used
     // depending on the current episode, and the game version.
     if ( (gamemode == commercial)
-	 || ( gamemode == pack_tnt )
-	 || ( gamemode == pack_plut ) )
+        || ( gamemode == (GameMode_t)pack_tnt )
+        || ( gamemode == (GameMode_t)pack_plut ) )
     {
 	skytexture = R_TextureNumForName ("SKY3");
 	if (gamemap < 12)
@@ -492,8 +488,8 @@ void G_DoLoadLevel (void)
     joyxmove = joyymove = 0; 
     mousex = mousey = 0; 
     sendpause = sendsave = paused = false; 
-    memset (mousebuttons, 0, sizeof(mousebuttons)); 
-    memset (joybuttons, 0, sizeof(joybuttons)); 
+    memset (mousebuttons, 0, sizeof(mousebuttons[0] * 3));
+    memset (joybuttons, 0, sizeof(joybuttons[0]) * 4);
 } 
  
  
@@ -760,11 +756,6 @@ void G_Ticker (void)
 //
 void G_InitPlayer (int player) 
 { 
-    player_t*	p; 
- 
-    // set up the saved info         
-    p = &players[player]; 
-	 
     // clear everything else to defaults 
     G_PlayerReborn (player); 
 	 
@@ -1200,20 +1191,19 @@ void G_LoadGame (char* name)
 
 void G_DoLoadGame (void) 
 { 
-    int		length; 
     int		i; 
     int		a,b,c; 
     char	vcheck[VERSIONSIZE]; 
 	 
     gameaction = ga_nothing; 
 	 
-    length = M_ReadFile (savename, &savebuffer); 
+    M_ReadFile (savename, &savebuffer);
     save_p = savebuffer + SAVESTRINGSIZE;
     
     // skip the description field 
     memset (vcheck,0,sizeof(vcheck)); 
     sprintf (vcheck,"version %i",VERSION); 
-    if (strcmp (save_p, vcheck)) 
+    if (strcmp ((const char*)save_p, vcheck))
 	return;				// bad version 
     save_p += VERSIONSIZE; 
 			 

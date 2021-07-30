@@ -23,11 +23,6 @@
 //
 //-----------------------------------------------------------------------------
 
-
-static const char rcsid[] = "$Id: r_main.c,v 1.5 1997/02/03 22:45:12 b1 Exp $";
-
-
-
 #include <stdlib.h>
 #include <math.h>
 
@@ -765,8 +760,8 @@ void R_ExecuteSetViewSize (void)
 //
 // R_Init
 //
-extern int	detailLevel;
-extern int	screenblocks;
+extern long	detailLevel;
+extern long	screenblocks;
 
 
 
