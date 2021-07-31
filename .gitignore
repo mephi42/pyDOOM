@@ -1,6 +1,7 @@
 .idea/
 CMakeCache.txt
 CMakeFiles/
+__pycache__/
 _skbuild/
 dist/
 pyDOOM.egg-info/

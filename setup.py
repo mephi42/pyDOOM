@@ -7,7 +7,7 @@ skbuild.setup(
     author_email="mephi42@gmail.com",
     description="Python-controlled vanilla DOOM",
     url="https://github.com/mephi42/pyDOOM",
-    packages=["_pyDOOM"],
+    packages=["_pyDOOM", "pyDOOM"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",

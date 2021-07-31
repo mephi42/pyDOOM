@@ -78,6 +78,5 @@ target_compile_options(_pyDOOM PRIVATE
         -Wno-unused-result
 )
 target_compile_definitions(_pyDOOM PRIVATE NORMALUNIX LINUX)
-target_link_libraries(_pyDOOM Xext X11 nsl m)
 python_extension_module(_pyDOOM)
 install(TARGETS _pyDOOM LIBRARY DESTINATION _pyDOOM)
