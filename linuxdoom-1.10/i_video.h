@@ -31,7 +31,7 @@
 #endif
 
 
-// Called by D_DoomMain,
+// Called by D_DoomInit,
 // determines the hardware configuration
 // and sets up the video mode
 void I_InitGraphics (void);

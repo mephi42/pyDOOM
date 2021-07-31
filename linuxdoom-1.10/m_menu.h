@@ -46,7 +46,7 @@ void M_Ticker (void);
 // draws the menus directly into the screen buffer.
 void M_Drawer (void);
 
-// Called by D_DoomMain,
+// Called by D_DoomInit,
 // loads the config file.
 void M_Init (void);
 

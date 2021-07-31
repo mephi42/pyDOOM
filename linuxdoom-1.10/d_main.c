@@ -17,7 +17,7 @@
 // $Log:$
 //
 // DESCRIPTION:
-//	DOOM main program (D_DoomMain) and game loop (D_DoomLoop),
+//	DOOM main program (D_DoomInit) and game loop (D_DoomLoopStep),
 //	plus functions to determine game mode (shareware, registered),
 //	parse command line parameters, configure game parameters (turbo),
 //	and call the startup functions.
@@ -75,15 +75,12 @@
 #include "d_main.h"
 
 //
-// D-DoomLoop()
-// Not a globally visible function,
-//  just included for source reference,
-//  called by D_DoomMain, never exits.
+// D_DoomLoopStep()
 // Manages timing and IO,
 //  calls all ?_Responder, ?_Ticker, and ?_Drawer,
 //  calls I_GetTime, I_StartFrame, and I_StartTic
 //
-void D_DoomLoop (void);
+void D_DoomLoopStep (void);
 
 
 char*		wadfiles[MAXWADFILES];
@@ -343,12 +340,9 @@ void D_Display (void)
 
 
 
-//
-//  D_DoomLoop
-//
 extern  boolean         demorecording;
 
-void D_DoomLoop (void)
+void D_DoomLoopInit (void)
 {
     if (demorecording)
 	G_BeginRecording ();
@@ -362,48 +356,46 @@ void D_DoomLoop (void)
     }
 	
     I_InitGraphics ();
-
-    while (1)
-    {
-	// frame syncronous IO operations
-	I_StartFrame ();                
-	
-	// process one or more tics
-	if (singletics)
-	{
-	    I_StartTic ();
-	    D_ProcessEvents ();
-	    G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
-	    if (advancedemo)
-		D_DoAdvanceDemo ();
-	    M_Ticker ();
-	    G_Ticker ();
-	    gametic++;
-	    maketic++;
-	}
-	else
-	{
-	    TryRunTics (); // will run at least one tic
-	}
-		
-	S_UpdateSounds (players[consoleplayer].mo);// move positional sounds
-
-	// Update display, next frame, with current state.
-	D_Display ();
-
-#ifndef SNDSERV
-	// Sound mixing for the buffer is snychronous.
-	I_UpdateSound();
-#endif	
-	// Synchronous sound output is explicitly called.
-#ifndef SNDINTR
-	// Update sound output.
-	I_SubmitSound();
-#endif
-    }
 }
 
+void D_DoomLoopStep (void)
+{
+    // frame syncronous IO operations
+    I_StartFrame ();
 
+    // process one or more tics
+    if (singletics)
+    {
+        I_StartTic ();
+        D_ProcessEvents ();
+        G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
+        if (advancedemo)
+            D_DoAdvanceDemo ();
+        M_Ticker ();
+        G_Ticker ();
+        gametic++;
+        maketic++;
+    }
+    else
+    {
+        TryRunTics (); // will run at least one tic
+    }
+
+    S_UpdateSounds (players[consoleplayer].mo);// move positional sounds
+
+    // Update display, next frame, with current state.
+    D_Display ();
+
+#ifndef SNDSERV
+    // Sound mixing for the buffer is snychronous.
+    I_UpdateSound();
+#endif	
+    // Synchronous sound output is explicitly called.
+#ifndef SNDINTR
+    // Update sound output.
+    I_SubmitSound();
+#endif
+}
 
 //
 //  DEMO LOOP
@@ -786,11 +778,7 @@ void FindResponseFile (void)
 	}
 }
 
-
-//
-// D_DoomMain
-//
-void D_DoomMain (void)
+void D_DoomInit (void)
 {
     int             p;
     char                    file[256];
@@ -1054,9 +1042,8 @@ void D_DoomMain (void)
 	    "                      press enter to continue\n"
 	    "===========================================================================\n"
 	    );
-	getchar ();
     }
-	
+
 
     // Check and print which version is executed.
     switch ( gamemode )
@@ -1134,14 +1121,16 @@ void D_DoomMain (void)
     {
 	singledemo = true;              // quit after one demo
 	G_DeferedPlayDemo (myargv[p+1]);
-	D_DoomLoop ();  // never returns
+	D_DoomLoopInit ();
+	return;
     }
 	
     p = M_CheckParm ("-timedemo");
     if (p && p < myargc-1)
     {
 	G_TimeDemo (myargv[p+1]);
-	D_DoomLoop ();  // never returns
+	D_DoomLoopInit ();
+	return;
     }
 	
     p = M_CheckParm ("-loadgame");
@@ -1164,5 +1153,5 @@ void D_DoomMain (void)
 
     }
 
-    D_DoomLoop ();  // never returns
+    D_DoomLoopInit ();
 }

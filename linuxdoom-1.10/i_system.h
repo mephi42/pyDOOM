@@ -31,7 +31,7 @@
 #endif
 
 
-// Called by DoomMain.
+// Called by D_DoomInit.
 void I_Init (void);
 
 // Called by startup code
@@ -40,13 +40,13 @@ void I_Init (void);
 byte*	I_ZoneBase (int *size);
 
 
-// Called by D_DoomLoop,
+// Called by D_DoomLoopStep,
 // returns current time in tics.
 int I_GetTime (void);
 
 
 //
-// Called by D_DoomLoop,
+// Called by D_DoomLoopStep,
 // called before processing any tics in a frame
 // (just after displaying a frame).
 // Time consuming syncronous operations
@@ -57,7 +57,7 @@ void I_StartFrame (void);
 
 
 //
-// Called by D_DoomLoop,
+// Called by D_DoomLoopStep,
 // called before processing each tic in a frame.
 // Quick syncronous operations are performed here.
 // Can call D_PostEvent.

@@ -1,3 +1,4 @@
+import contextlib
 from libc.stdlib cimport free, malloc
 
 
@@ -11,10 +12,12 @@ cdef extern from "m_argv.h":
 
 
 cdef extern from "d_main.h":
-    void D_DoomMain()
+    void D_DoomInit()
+    void D_DoomLoopStep()
 
 
-cpdef long main(args):
+@contextlib.contextmanager
+def init(args):
     global myargc
     global myargv
     myargc = len(args)
@@ -25,8 +28,13 @@ cpdef long main(args):
         myargv[i] = <char *>PyUnicode_AsUTF8(args[i])
     myargv[myargc] = NULL
     try:
-        D_DoomMain()
+        D_DoomInit()
+        yield
     finally:
         myargc = 0
         free(myargv)
         myargv = NULL
+
+
+cpdef step():
+    D_DoomLoopStep()
